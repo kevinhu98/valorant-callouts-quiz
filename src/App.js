@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ChoiceDisplay from "./components/ChoiceDisplay";
 import ImageDisplay from "./components/ImageDisplay";
 
-const pearlImages = [
+const pearlObj = [
   {
     imageName: "pearl_secret.png",
     callout: "Secret"
@@ -30,16 +30,14 @@ const pearlImages = [
 ];
 
 function shuffle(array) {
+  // Fisher-Yates Shuffle
   let currentIndex = array.length,
     randomIndex;
 
-  // While there remain elements to shuffle.
   while (currentIndex != 0) {
-    // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
-    // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex]
@@ -57,13 +55,14 @@ export default () => {
   const [seen, setSeen] = useState([]);
   const [correctScore, setCorrectScore] = useState(0);
   const [incorrectScore, setIncorrectScore] = useState(0);
+  const [colorHidden, setColorHidden] = useState(true);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * pearlImages.length); //should change this to random elem in total arr then pop
-    const answer = pearlImages[randomIndex].callout; //should change this to random elem in total arr then pop
+    const randomIndex = Math.floor(Math.random() * pearlObj.length); //should change this to random elem in total arr then pop
+    const answer = pearlObj[randomIndex].callout; //should change this to random elem in total arr then pop
     setCorrectAnswer(answer);
-    setImage(pearlImages[randomIndex].imageName);
-    var options = pearlImages
+    setImage(pearlObj[randomIndex].imageName);
+    var options = pearlObj
       .map((loc) => loc.callout)
       .filter((choice) => choice !== answer) // make sure no duplicate answer
       //.filter((x) => !seen.includes(x))
@@ -74,11 +73,16 @@ export default () => {
   }, [correctScore, incorrectScore]);
 
   const onChoiceClicked = (choice) => {
-    if (correctAnswer === choice) {
-      setCorrectScore(correctScore + 1);
-    } else {
-      setIncorrectScore(incorrectScore + 1);
-    }
+    // reveal correct answer and pause, then resets questions
+    setColorHidden(false);
+    setTimeout(() => {
+      setColorHidden(true);
+      if (correctAnswer === choice) {
+        setCorrectScore(correctScore + 1);
+      } else {
+        setIncorrectScore(incorrectScore + 1);
+      }
+    }, 2500);
   };
 
   return (
@@ -91,6 +95,8 @@ export default () => {
       <ChoiceDisplay
         choices={choices}
         onChoiceClicked={onChoiceClicked}
+        colorHidden={colorHidden}
+        correctAnswer={correctAnswer}
       ></ChoiceDisplay>
     </div>
   );
