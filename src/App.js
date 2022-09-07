@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ChoiceDisplay from "./components/ChoiceDisplay";
 import ImageDisplay from "./components/ImageDisplay";
+import Dropdown from "./components/Dropdown";
 
 const pearlObj = [
   {
@@ -29,6 +30,21 @@ const pearlObj = [
   }
 ];
 
+const mapPool = [
+  {
+    label: "Pearl",
+    value: pearlObj
+  },
+  {
+    label: "Fracture",
+    value: "Fracture"
+  },
+  {
+    label: "Breeze",
+    value: "Breeze"
+  }
+];
+
 function shuffle(array) {
   // Fisher-Yates Shuffle
   let currentIndex = array.length,
@@ -48,7 +64,7 @@ function shuffle(array) {
 }
 
 export default () => {
-  const [map, setMap] = useState("Pearl");
+  const [selectedMap, setSelectedMap] = useState(mapPool[0]);
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [image, setImage] = useState("");
   const [choices, setChoices] = useState([]);
@@ -91,6 +107,13 @@ export default () => {
         Score: {correctScore} - {incorrectScore}
       </div>
       <div>Correct Answer: {correctAnswer}</div>
+      <Dropdown
+        label="Select a map"
+        options={mapPool}
+        selected={selectedMap}
+        onSelectedChange={setSelectedMap}
+      />
+
       <ImageDisplay imageName={image}></ImageDisplay>
       <ChoiceDisplay
         choices={choices}
