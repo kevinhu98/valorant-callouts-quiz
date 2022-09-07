@@ -30,6 +30,33 @@ const pearlObj = [
   }
 ];
 
+const fractureObj = [
+  {
+    imageName: "pearl_secret.png",
+    callout: "A"
+  },
+  {
+    imageName: "chicken1.png",
+    callout: "B"
+  },
+  {
+    imageName: "chicken2.png",
+    callout: "C"
+  },
+  {
+    imageName: "pearl_secret.png",
+    callout: "D"
+  },
+  {
+    imageName: "chicken1.png",
+    callout: "E"
+  },
+  {
+    imageName: "chicken2.png",
+    callout: "F"
+  }
+];
+
 const mapPool = [
   {
     label: "Pearl",
@@ -37,11 +64,7 @@ const mapPool = [
   },
   {
     label: "Fracture",
-    value: "Fracture"
-  },
-  {
-    label: "Breeze",
-    value: "Breeze"
+    value: fractureObj
   }
 ];
 
@@ -74,19 +97,18 @@ export default () => {
   const [colorHidden, setColorHidden] = useState(true);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * pearlObj.length); //should change this to random elem in total arr then pop
-    const answer = pearlObj[randomIndex].callout; //should change this to random elem in total arr then pop
-    setCorrectAnswer(answer);
-    setImage(pearlObj[randomIndex].imageName);
-    var options = pearlObj
+    const randomIndex = Math.floor(Math.random() * selectedMap.value.length); //should change this to random elem in total arr then pop
+    const answer = selectedMap.value[randomIndex].callout; //should change this to random elem in total arr then pop
+    var options = selectedMap.value
       .map((loc) => loc.callout)
       .filter((choice) => choice !== answer) // make sure no duplicate answer
       //.filter((x) => !seen.includes(x))
       .sort(() => Math.random() - Math.random())
       .slice(0, 3); // todo: make this option for number of choices
-
     setChoices(shuffle([...options, answer]));
-  }, [correctScore, incorrectScore]);
+    setCorrectAnswer(answer);
+    setImage(selectedMap.value[randomIndex].imageName);
+  }, [correctScore, incorrectScore, selectedMap]);
 
   const onChoiceClicked = (choice) => {
     // reveal correct answer and pause, then resets questions
@@ -107,6 +129,7 @@ export default () => {
         Score: {correctScore} - {incorrectScore}
       </div>
       <div>Correct Answer: {correctAnswer}</div>
+
       <Dropdown
         label="Select a map"
         options={mapPool}
@@ -114,13 +137,13 @@ export default () => {
         onSelectedChange={setSelectedMap}
       />
 
-      <ImageDisplay imageName={image}></ImageDisplay>
+      <ImageDisplay imageName={image} />
       <ChoiceDisplay
         choices={choices}
         onChoiceClicked={onChoiceClicked}
         colorHidden={colorHidden}
         correctAnswer={correctAnswer}
-      ></ChoiceDisplay>
+      />
     </div>
   );
 };
