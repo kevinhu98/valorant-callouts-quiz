@@ -20,7 +20,9 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
       });
     };
   }, []);
-
+  if (!selected) {
+    return <div>loading</div>;
+  }
   const renderedOptions = options.map((option) => {
     if (option.value === selected.value) {
       return null;

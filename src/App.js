@@ -184,7 +184,7 @@ function shuffle(array) {
 }
 
 export default () => {
-  const [selectedMap, setSelectedMap] = useState(mapPool[0]);
+  const [selectedMap, setSelectedMap] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [image, setImage] = useState("");
   const [choices, setChoices] = useState([]);
@@ -220,21 +220,24 @@ export default () => {
         }
       });
       setMapCallouts(mapInfo);
+      setSelectedMap(mapInfo[0]);
     };
     getMapInfo();
   }, []);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * selectedMap.value.length); //should change this to random elem in total arr then pop
-    const answer = selectedMap.value[randomIndex].callout; //should change this to random elem in total arr then pop
-    var options = shuffle(
-      selectedMap.value
-        .map((loc) => loc.callout)
-        .filter((choice) => choice !== answer) // make sure no duplicate answer
-    ).slice(0, 3); // todo: make this option for number of choices
-    setChoices(shuffle([...options, answer]));
-    setCorrectAnswer(answer);
-    setImage(selectedMap.value[randomIndex].imageName);
+    if (selectedMap) {
+      const randomIndex = Math.floor(Math.random() * selectedMap.value.length); //should change this to random elem in total arr then pop
+      const answer = selectedMap.value[randomIndex].callout; //should change this to random elem in total arr then pop
+      var options = shuffle(
+        selectedMap.value
+          .map((loc) => loc.callout)
+          .filter((choice) => choice !== answer) // make sure no duplicate answer
+      ).slice(0, 3); // todo: make this option for number of choices
+      setChoices(shuffle([...options, answer]));
+      setCorrectAnswer(answer);
+      setImage(selectedMap.value[randomIndex].imageName);
+    }
   }, [correctScore, incorrectScore, selectedMap]);
 
   const onChoiceClicked = (choice) => {
@@ -249,7 +252,7 @@ export default () => {
       }
     }, 2500);
   };
-
+  console.log(mapCallouts);
   return (
     <div>
       <div>
@@ -259,7 +262,7 @@ export default () => {
 
       <Dropdown
         label="Select a map"
-        options={mapPool}
+        options={mapCallouts}
         selected={selectedMap}
         onSelectedChange={setSelectedMap}
       />
