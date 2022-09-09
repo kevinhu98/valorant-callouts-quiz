@@ -27,9 +27,10 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
     if (option.value === selected.value) {
       return null;
     }
+
     return (
       <div
-        key={option.value}
+        key={option.label}
         className="item"
         onClick={() => onSelectedChange(option)}
       >
