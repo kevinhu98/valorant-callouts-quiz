@@ -4,167 +4,6 @@ import ImageDisplay from "./components/ImageDisplay";
 import Dropdown from "./components/Dropdown";
 import axios from "axios";
 
-const pearlObj = [
-  {
-    imageName: "pearl_secret.png",
-    callout: "A Site"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "B Site"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Arch"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Art"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Club"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Connector"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Courtyard"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Restaurant"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Shops"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Spawn"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Secret"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Records"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Restaurant"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Shops"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Spawn"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Secret"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Records"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Restaurant"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Shops"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Spawn"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Secret"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Records"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Restaurant"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Shops"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Spawn"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Secret"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Records"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "Restaurant"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "Shops"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "Spawn"
-  }
-];
-
-const fractureObj = [
-  {
-    imageName: "pearl_secret.png",
-    callout: "A"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "B"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "C"
-  },
-  {
-    imageName: "pearl_secret.png",
-    callout: "D"
-  },
-  {
-    imageName: "chicken1.png",
-    callout: "E"
-  },
-  {
-    imageName: "chicken2.png",
-    callout: "F"
-  }
-];
-
-const mapPool = [
-  {
-    label: "Pearl",
-    value: pearlObj
-  },
-  {
-    label: "Fracture",
-    value: fractureObj
-  }
-];
-
 function shuffle(array) {
   // Fisher-Yates Shuffle
   let currentIndex = array.length,
@@ -203,13 +42,19 @@ export default () => {
       data.data.forEach((elem) => {
         // iterate through each map
         var mapValues = [];
+        var multipleCallouts = ["Link", "Main", "Spawn", "Site"];
         if (elem.callouts) {
           elem.callouts.forEach((eachCallout) => {
+            const imageCalloutPair = new Object();
             // add each callout/image pair to map arr
-            let imageCalloutPair = {
-              callout: eachCallout.regionName,
-              imageName: `${elem.displayName}_${eachCallout.regionName}`
-            };
+            if (multipleCallouts.indexOf(eachCallout.regionName) > -1) {
+              // if callout has multiple sites, include site
+              imageCalloutPair.callout = `${eachCallout.superRegionName} ${eachCallout.regionName}`;
+              imageCalloutPair.imageName = `${elem.displayName}_${eachCallout.superRegionName}_${eachCallout.regionName}`;
+            } else {
+              imageCalloutPair.callout = eachCallout.regionName;
+              imageCalloutPair.imageName = `${elem.displayName}_${eachCallout.regionName}`;
+            }
             mapValues.push(imageCalloutPair);
           });
           mapInfo.push({
@@ -220,7 +65,7 @@ export default () => {
         }
       });
       setMapCallouts(mapInfo);
-      setSelectedMap(mapInfo[0]);
+      setSelectedMap(mapInfo[5]);
     };
     getMapInfo();
   }, []);
@@ -252,13 +97,12 @@ export default () => {
       }
     }, 2500);
   };
-  console.log(mapCallouts);
+
   return (
     <div>
       <div>
         Score: {correctScore} - {incorrectScore}
       </div>
-      <div>Correct Answer: {correctAnswer}</div>
 
       <Dropdown
         label="Select a map"
