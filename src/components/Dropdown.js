@@ -22,7 +22,14 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
   }, []);
 
   if (!selected) {
-    return <div>loading</div>;
+    return (
+      <div class="ui segment">
+        <div class="ui active dimmer">
+          <div class="ui text loader">Loading</div>
+        </div>
+        <p></p>
+      </div>
+    );
   }
 
   const renderedOptions = options.map((option) => {

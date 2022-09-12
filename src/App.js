@@ -79,9 +79,9 @@ export default () => {
           .map((loc) => loc.callout)
           .filter((choice) => choice !== answer) // make sure no duplicate answer
       ).slice(0, 3); // todo: make this option for number of choices
+      setImage(selectedMap.value[randomIndex].imageName);
       setChoices(shuffle([...options, answer]));
       setCorrectAnswer(answer);
-      setImage(selectedMap.value[randomIndex].imageName);
     }
   }, [correctScore, incorrectScore, selectedMap]);
 
