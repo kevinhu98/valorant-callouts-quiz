@@ -27,12 +27,17 @@ export default () => {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [image, setImage] = useState("");
   const [choices, setChoices] = useState([]);
-  const [seen, setSeen] = useState([]);
+  const [valueIndex, setValueIndex] = useState(0); // current callout/image index
   const [correctScore, setCorrectScore] = useState(0);
   const [incorrectScore, setIncorrectScore] = useState(0);
   const [colorHidden, setColorHidden] = useState(true);
   const [mapNames, setMapNames] = useState([]);
   const [mapCallouts, setMapCallouts] = useState("");
+  const [mapFinished, setMapFinished] = useState(false);
+
+  useEffect(() => {
+    setMapFinished(false); // when user sets map, reset
+  }, [selectedMap]);
 
   useEffect(() => {
     const getMapInfo = async () => {
@@ -60,7 +65,7 @@ export default () => {
           mapInfo.push({
             // add each map to total map arr
             label: elem.displayName,
-            value: mapValues
+            value: shuffle(mapValues)
           });
         }
       });
@@ -71,15 +76,16 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    if (selectedMap) {
-      const randomIndex = Math.floor(Math.random() * selectedMap.value.length); //should change this to random elem in total arr then pop
-      const answer = selectedMap.value[randomIndex].callout; //should change this to random elem in total arr then pop
+    if (selectedMap && valueIndex === selectedMap.value.length) {
+      setMapFinished(true);
+    } else if (selectedMap && !mapFinished) {
+      const answer = selectedMap.value[valueIndex].callout; //should change this to random elem in total arr then pop
       var options = shuffle(
         selectedMap.value
           .map((loc) => loc.callout)
           .filter((choice) => choice !== answer) // make sure no duplicate answer
       ).slice(0, 3); // todo: make this option for number of choices
-      setImage(selectedMap.value[randomIndex].imageName);
+      setImage(selectedMap.value[valueIndex].imageName);
       setChoices(shuffle([...options, answer]));
       setCorrectAnswer(answer);
     }
@@ -88,6 +94,7 @@ export default () => {
   const onChoiceClicked = (choice) => {
     // reveal correct answer and pause, then resets questions
     setColorHidden(false);
+    setValueIndex(valueIndex + 1);
     setTimeout(() => {
       setColorHidden(true);
       if (correctAnswer === choice) {
@@ -98,26 +105,45 @@ export default () => {
     }, 2500);
   };
 
-  return (
-    <div>
+  if (mapFinished) {
+    return (
       <div>
-        Score: {correctScore} - {incorrectScore}
+        <div>
+          Score: {correctScore} - {incorrectScore}
+        </div>
+
+        <Dropdown
+          label="Select a map"
+          options={mapCallouts}
+          selected={selectedMap}
+          onSelectedChange={setSelectedMap}
+        />
+
+        <div> ya did it</div>
       </div>
+    );
+  } else {
+    return (
+      <div>
+        <div>
+          Score: {correctScore} - {incorrectScore}
+        </div>
 
-      <Dropdown
-        label="Select a map"
-        options={mapCallouts}
-        selected={selectedMap}
-        onSelectedChange={setSelectedMap}
-      />
+        <Dropdown
+          label="Select a map"
+          options={mapCallouts}
+          selected={selectedMap}
+          onSelectedChange={setSelectedMap}
+        />
 
-      <ImageDisplay imageName={image} />
-      <ChoiceDisplay
-        choices={choices}
-        onChoiceClicked={onChoiceClicked}
-        colorHidden={colorHidden}
-        correctAnswer={correctAnswer}
-      />
-    </div>
-  );
+        <ImageDisplay imageName={image} />
+        <ChoiceDisplay
+          choices={choices}
+          onChoiceClicked={onChoiceClicked}
+          colorHidden={colorHidden}
+          correctAnswer={correctAnswer}
+        />
+      </div>
+    );
+  }
 };
