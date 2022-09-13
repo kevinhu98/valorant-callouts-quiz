@@ -9,7 +9,7 @@ function shuffle(array) {
   let currentIndex = array.length,
     randomIndex;
 
-  while (currentIndex != 0) {
+  while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
@@ -27,11 +27,10 @@ export default () => {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [image, setImage] = useState("");
   const [choices, setChoices] = useState([]);
-  const [valueIndex, setValueIndex] = useState(0); // current callout/image index
+  const [valueIndex, setValueIndex] = useState(25); // current callout/image index
   const [correctScore, setCorrectScore] = useState(0);
   const [incorrectScore, setIncorrectScore] = useState(0);
   const [colorHidden, setColorHidden] = useState(true);
-  const [mapNames, setMapNames] = useState([]);
   const [mapCallouts, setMapCallouts] = useState("");
   const [mapFinished, setMapFinished] = useState(false);
 
@@ -42,7 +41,6 @@ export default () => {
   useEffect(() => {
     const getMapInfo = async () => {
       const { data } = await axios.get("https://valorant-api.com/v1/maps");
-      setMapNames(data.data.map((data) => data.displayName));
       const mapInfo = [];
       data.data.forEach((elem) => {
         // iterate through each map
@@ -78,7 +76,7 @@ export default () => {
   useEffect(() => {
     if (selectedMap && valueIndex === selectedMap.value.length) {
       setMapFinished(true);
-    } else if (selectedMap && !mapFinished) {
+    } else {
       const answer = selectedMap.value[valueIndex].callout; //should change this to random elem in total arr then pop
       var options = shuffle(
         selectedMap.value
@@ -89,14 +87,15 @@ export default () => {
       setChoices(shuffle([...options, answer]));
       setCorrectAnswer(answer);
     }
-  }, [correctScore, incorrectScore, selectedMap]);
+  }, [valueIndex, selectedMap]);
 
   const onChoiceClicked = (choice) => {
     // reveal correct answer and pause, then resets questions
     setColorHidden(false);
-    setValueIndex(valueIndex + 1);
+
     setTimeout(() => {
       setColorHidden(true);
+      setValueIndex(valueIndex + 1);
       if (correctAnswer === choice) {
         setCorrectScore(correctScore + 1);
       } else {
