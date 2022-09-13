@@ -22,12 +22,12 @@ function shuffle(array) {
   return array;
 }
 
-export default () => {
+const App = () => {
   const [selectedMap, setSelectedMap] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [image, setImage] = useState("");
   const [choices, setChoices] = useState([]);
-  const [valueIndex, setValueIndex] = useState(25); // current callout/image index
+  const [valueIndex, setValueIndex] = useState(0); // current callout/image index
   const [correctScore, setCorrectScore] = useState(0);
   const [incorrectScore, setIncorrectScore] = useState(0);
   const [colorHidden, setColorHidden] = useState(true);
@@ -48,7 +48,7 @@ export default () => {
         var multipleCallouts = ["Link", "Main", "Spawn", "Site"];
         if (elem.callouts) {
           elem.callouts.forEach((eachCallout) => {
-            const imageCalloutPair = new Object();
+            const imageCalloutPair = {};
             // add each callout/image pair to map arr
             if (multipleCallouts.indexOf(eachCallout.regionName) > -1) {
               // if callout has multiple sites, include site
@@ -76,7 +76,7 @@ export default () => {
   useEffect(() => {
     if (selectedMap && valueIndex === selectedMap.value.length) {
       setMapFinished(true);
-    } else {
+    } else if (selectedMap) {
       const answer = selectedMap.value[valueIndex].callout; //should change this to random elem in total arr then pop
       var options = shuffle(
         selectedMap.value
@@ -110,14 +110,12 @@ export default () => {
         <div>
           Score: {correctScore} - {incorrectScore}
         </div>
-
         <Dropdown
           label="Select a map"
           options={mapCallouts}
           selected={selectedMap}
           onSelectedChange={setSelectedMap}
         />
-
         <div> ya did it</div>
       </div>
     );
@@ -127,14 +125,12 @@ export default () => {
         <div>
           Score: {correctScore} - {incorrectScore}
         </div>
-
         <Dropdown
           label="Select a map"
           options={mapCallouts}
           selected={selectedMap}
           onSelectedChange={setSelectedMap}
         />
-
         <ImageDisplay imageName={image} />
         <ChoiceDisplay
           choices={choices}
@@ -146,3 +142,5 @@ export default () => {
     );
   }
 };
+
+export default App;

@@ -23,9 +23,9 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
 
   if (!selected) {
     return (
-      <div class="ui segment">
-        <div class="ui active dimmer">
-          <div class="ui massive text loader">Loading</div>
+      <div className="ui segment">
+        <div className="ui active dimmer">
+          <div className="ui massive text loader">Loading</div>
         </div>
         <p></p>
       </div>
