@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ChoiceDisplay from "./components/ChoiceDisplay";
 import ImageDisplay from "./components/ImageDisplay";
+import ScoreDisplay from "./components/ScoreDisplay";
 import Dropdown from "./components/Dropdown";
 import axios from "axios";
+import "./App.scss";
 
 function shuffle(array) {
   // Fisher-Yates Shuffle
@@ -121,15 +123,16 @@ const App = () => {
     );
   } else {
     return (
-      <div>
-        <div>
-          Score: {correctScore} - {incorrectScore}
-        </div>
+      <div className="app">
         <Dropdown
           label="Select a map"
           options={mapCallouts}
           selected={selectedMap}
           onSelectedChange={setSelectedMap}
+        />
+        <ScoreDisplay
+          correctScore={correctScore}
+          incorrectScore={incorrectScore}
         />
         <ImageDisplay imageName={image} />
         <ChoiceDisplay

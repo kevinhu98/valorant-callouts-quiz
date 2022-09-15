@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./Dropdown.scss";
 
 const Dropdown = ({ label, options, selected, onSelectedChange }) => {
   const [open, setOpen] = useState(false);
