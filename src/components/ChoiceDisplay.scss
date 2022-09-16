@@ -9,4 +9,7 @@
 
 .button {
   width: 100%;
+  :active {
+    filter: brightness(0.85);
+  }
 }
